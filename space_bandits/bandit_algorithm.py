@@ -79,10 +79,11 @@ class BanditAlgorithm(object):
         #recall training data
         past_actions = np.array(self.data_h.actions)
         past_rewards = np.array(self.data_h.rewards)
-
+        
+        n_actions = self.hparams['num_actions']
         #compute naive expected rewards
         E_b = []
-        for a in range(self.hparams.num_actions):
+        for a in range(n_actions):
             inds = np.argwhere(past_actions==a)
             slc = past_rewards[inds, a][:, 0]
             E = slc.mean()
@@ -90,7 +91,7 @@ class BanditAlgorithm(object):
         Err_b = []
 
         #compute benchmark error
-        for a in range(self.hparams.num_actions):
+        for a in range(n_actions):
             args = np.argwhere(action==a)[:, 0]
             slc = reward[args]
             y_pred = [E_b[a] for x in range(len(slc))]
@@ -103,7 +104,7 @@ class BanditAlgorithm(object):
         bal = []
         expected_values = self.expected_values(context)
         Err_m = []
-        for a in range(self.hparams.num_actions):
+        for a in range(n_actions):
             args = np.argwhere(action==a)[:, 0]
             #record representation of action a
             bal.append(len(args))
